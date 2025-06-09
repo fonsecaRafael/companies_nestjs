@@ -20,7 +20,7 @@ export class CompaniesService {
     return `This action updates a #${id} company`;
   }
 
-  remove(id: number) {
+  softDelete(id: number) {
     return `This action removes a #${id} company`;
   }
 }
