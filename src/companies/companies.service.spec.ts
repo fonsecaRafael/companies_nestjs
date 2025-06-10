@@ -38,87 +38,81 @@ describe('CompaniesService', () => {
   });
 
   describe('create()', () => {
-    it('should create a company', () => {
+    it('should create a company', async () => {
       const dto: CreateCompanyDto = {
         name: 'Empresa Teste',
         cnpj: '12.345.678/0001-99',
-        address: 'Rua Exemplo, 123',
       };
 
       const mockCompany = { id: 1, ...dto, deletedAt: null };
       jest.spyOn(companyRepository, 'create').mockReturnValue(mockCompany);
       jest.spyOn(companyRepository, 'save').mockResolvedValue(mockCompany);
 
-      const result = service.create(dto);
-      expect(
-        companyRepository.create.bind(companyRepository),
-      ).toHaveBeenCalledWith(dto);
-      expect(
-        companyRepository.save.bind(companyRepository),
-      ).toHaveBeenCalledWith(mockCompany);
+      const result = await service.create(dto);
+      expect(companyRepository.create).toHaveBeenCalledWith(dto);
+      expect(companyRepository.save).toHaveBeenCalledWith(mockCompany);
       expect(result).toEqual(mockCompany);
     });
   });
 
   describe('findAll()', () => {
-    it('should return active companies', () => {
+    it('should return active companies', async () => {
       const mockCompanies: Company[] = [
         {
           id: 1,
           name: 'Empresa A',
           cnpj: '12.345.678/0001-99',
-          address: 'Rua A, 123',
           deletedAt: null,
         },
       ];
 
       jest.spyOn(companyRepository, 'find').mockResolvedValue(mockCompanies);
 
-      const result = service.findAll();
-      expect(
-        companyRepository.find.bind(companyRepository),
-      ).toHaveBeenCalledWith({ where: { deletedAt: null } });
+      const result = await service.findAll();
+      expect(companyRepository.find).toHaveBeenCalledWith({
+        where: { deletedAt: null },
+      });
       expect(result).toEqual(mockCompanies);
     });
   });
 
   describe('findOne()', () => {
-    it('should return a company by CNPJ', () => {
-      const id = 1;
+    it('should return a company by CNPJ', async () => {
+      const cnpj = '12.345.678/0001-99';
       const mockCompany: Company = {
-        id,
-        cnpj: '12.345.678/0001-99',
+        id: 1,
+        cnpj,
         name: 'Empresa Teste',
-        address: 'Rua Exemplo, 123',
         deletedAt: null,
       };
 
       jest.spyOn(companyRepository, 'findOne').mockResolvedValue(mockCompany);
 
-      const result = service.findOne(id);
-      expect(
-        companyRepository.findOne.bind(companyRepository),
-      ).toHaveBeenCalledWith({ where: { id, deletedAt: null } });
+      const result = await service.findOne(cnpj);
+      expect(companyRepository.findOne).toHaveBeenCalledWith({
+        where: { cnpj, deletedAt: null },
+      });
       expect(result).toEqual(mockCompany);
     });
 
     it('should throw NotFoundException if company does not exist', async () => {
       jest.spyOn(companyRepository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.findOne(8)).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('00.000.000/0001-00')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('softDelete()', () => {
-    it('should perform soft delete', () => {
+    it('should perform soft delete', async () => {
+      const cnpj = '12.345.678/0001-99';
       jest
         .spyOn(companyRepository, 'softDelete')
         .mockResolvedValue({ affected: 1 } as any);
 
-      service.softDelete(1);
-      expect(
-        companyRepository.softDelete.bind(companyRepository),
-      ).toHaveBeenCalledWith({ id: '1' });
+      await service.softDelete(cnpj);
+      expect(companyRepository.softDelete).toHaveBeenCalledWith({ cnpj });
     });
 
     it('should throw NotFoundException if company does not exist', async () => {
@@ -126,7 +120,9 @@ describe('CompaniesService', () => {
         .spyOn(companyRepository, 'softDelete')
         .mockResolvedValue({ affected: 0 } as any);
 
-      await expect(service.softDelete(2)).rejects.toThrow(NotFoundException);
+      await expect(service.softDelete('00.000.000/0001-00')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
