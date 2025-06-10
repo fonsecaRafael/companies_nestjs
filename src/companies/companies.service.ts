@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Company } from './entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Injectable()
 export class CompaniesService {
-  create(createCompanyDto: CreateCompanyDto) {
-    return 'This action adds a new company';
+  constructor(
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
+  ) {}
+
+  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+    const company = this.companyRepository.create(createCompanyDto);
+    return this.companyRepository.save(company);
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll(): Promise<Company[]> {
+    return this.companyRepository.find({ where: { deletedAt: null } }); // Filtra apenas ativos
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(cnpj: string): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { cnpj, deletedAt: null },
+    });
+    if (!company) throw new NotFoundException('Empresa não encontrada');
+    return company;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
-  }
-
-  softDelete(id: number) {
-    return `This action removes a #${id} company`;
+  async softDelete(cnpj: string): Promise<void> {
+    const result = await this.companyRepository.softDelete({ cnpj });
+    if (result.affected === 0) {
+      throw new NotFoundException('Empresa não encontrada');
+    }
   }
 }
