@@ -1,0 +1,9 @@
+PORT=9999
+
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=YourName
+DATABASE_PASSWORD=YourPassword
+DATABASE_NAME=YourDatabaseName
+
+Save your file like .env without extension
