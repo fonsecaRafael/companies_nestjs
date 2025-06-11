@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Injectable()
 export class CompaniesService {
@@ -17,15 +18,26 @@ export class CompaniesService {
   }
 
   async findAll(): Promise<Company[]> {
-    return this.companyRepository.find({ where: { deletedAt: null } }); // Filtra apenas ativos
+    return this.companyRepository.find();
   }
 
   async findOne(cnpj: string): Promise<Company> {
     const company = await this.companyRepository.findOne({
-      where: { cnpj, deletedAt: null },
+      where: { cnpj },
     });
     if (!company) throw new NotFoundException('Empresa não encontrada');
     return company;
+  }
+
+  async update(cnpj: string, updateCompanyDto: UpdateCompanyDto): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { cnpj },
+    });
+    if (!company) {
+      throw new NotFoundException('Empresa não encontrada');
+    }
+    this.companyRepository.merge(company, updateCompanyDto);
+    return this.companyRepository.save(company);
   }
 
   async softDelete(cnpj: string): Promise<void> {
