@@ -10,6 +10,11 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Address } from '../../addresses/entities/address.entity';
+import { Contact } from '../../contacts/entities/contact.entity';
+import { Partner } from '../partners/entities/partner.entity';
+import { Revenue } from '../revenues/entities/revenue.entity';
+import { Product } from '../products/entities/product.entity';
+import { Cnae } from '../cnaes/entities/cnae.entity';
 
 @Entity()
 export class Company {
@@ -71,4 +76,19 @@ export class Company {
   // Relationship
   @OneToMany(() => Address, (address) => address.company)
   addresses: Address[];
+
+  @OneToMany(() => Contact, (contact) => contact.company)
+  contacts: Contact[];
+
+  @OneToMany(() => Partner, (partner) => partner.company)
+  partners: Partner[];
+
+  @OneToMany(() => Cnae, (cnae) => cnae.company)
+  cnaes: Cnae[];
+
+  @OneToMany(() => Revenue, (revenue) => revenue.company)
+  revenues: Revenue[];
+
+  @OneToMany(() => Product, (product) => product.company)
+  products: Product[];
 }
