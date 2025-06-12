@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CompanySize, CompanyStatus, LegalNature } from '../../shared/enums';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { Address } from '../../addresses/entities/address.entity';
 
 @Entity()
 export class Company {
@@ -18,10 +27,6 @@ export class Company {
   @Column()
   @ApiProperty({ example: 'Nome Fantasia' })
   commercial_name: string;
-
-  @Column()
-  @ApiProperty({ example: 'Rua Exemplo, 123' })
-  address: string;
 
   @Column({ type: 'date' })
   @ApiProperty({ example: '2020-01-01' })
@@ -62,4 +67,8 @@ export class Company {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  // Relationship
+  @OneToMany(() => Address, (address) => address.company)
+  addresses: Address[];
 }
