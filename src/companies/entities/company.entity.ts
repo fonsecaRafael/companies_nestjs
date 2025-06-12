@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CompanySize, CompanyStatus, LegalNature } from 'src/shared/enums';
+import { CompanySize, CompanyStatus, LegalNature } from '../../shared/enums';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 
 @Entity()
