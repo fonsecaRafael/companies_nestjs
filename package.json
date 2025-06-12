@@ -22,7 +22,7 @@
     "//": "The migration:<something> scripts does NOT work! I need copy and paste it, on your terminal!",
     "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d src/config/data-source.ts src/migrations/<Migration Name>",
     "migration:create": "Not created yet",
-    "migration:run": "Not created yet",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts",
     "migration:revert": "Not created yet"
   },
   "dependencies": {
