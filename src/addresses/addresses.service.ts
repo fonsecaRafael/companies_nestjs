@@ -1,11 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Address } from './entities/address.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { Company } from '../companies/entities/company.entity';
 import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Injectable()
 export class AddressesService {
-  create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
+  constructor(
+    @InjectRepository(Address)
+    private addressRepository: Repository<Address>,
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
+  ) {}
+
+  async create(createAddressDto: CreateAddressDto): Promise<Address> {
+    const company = await this.companyRepository.findOne({
+      where: { id: createAddressDto.companyId },
+    });
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    const address = this.addressRepository.create({
+      ...createAddressDto,
+      company,
+    });
+
+    return this.addressRepository.save(address);
   }
 
   findAll() {
@@ -17,7 +41,7 @@ export class AddressesService {
   }
 
   update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+    return `This action updates a #${id} #${updateAddressDto.city} address`;
   }
 
   remove(id: number) {
