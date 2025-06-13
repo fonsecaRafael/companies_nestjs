@@ -6,6 +6,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PartnersModule } from './partners/partners.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CompaniesModule,
     AddressesModule,
     ContactsModule,
+    PartnersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
