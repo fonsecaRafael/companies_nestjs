@@ -6,11 +6,23 @@ export class Address {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  street: string;
+  @Column({ type: 'varchar', length: 100 })
+  logradouro: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   city: string;
+
+  @Column({ type: 'varchar', length: 8 })
+  cep: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  complement: string;
+
+  @Column({ type: 'varchar', length: 2 })
+  uf: string;
+
+  @Column('int')
+  numero: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   startDate: Date;
