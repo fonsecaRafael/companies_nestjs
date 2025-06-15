@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsDate, IsEnum, IsNumber } from 'class-validator';
 import { IsCnpj } from '../../validators/iscnpj.decorator';
-import { CompanySize, LegalNature, CompanyStatus } from '../../shared/enums';
+import { CompanySize, LegalNature, CompanyStatus, Tributation } from '../../shared/enums';
 
 export class CreateCompanyDto {
   @ApiProperty({
@@ -43,4 +43,8 @@ export class CreateCompanyDto {
   @ApiProperty({ example: '2023-01-01', description: 'Data do último status' })
   @IsDate()
   status_date: Date;
+
+  @ApiProperty({ enum: Tributation, example: Tributation.SIMPLES })
+  @IsEnum(Tributation)
+  tributation: Tributation;
 }

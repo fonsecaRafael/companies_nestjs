@@ -1,5 +1,5 @@
-import { Company } from 'src/companies/entities/company.entity';
-import { ProductType } from 'src/shared/enums/product-type.enum';
+import { Company } from '../../../companies/entities/company.entity';
+import { ProductType } from '../../../shared/enums/product-type.enum';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
