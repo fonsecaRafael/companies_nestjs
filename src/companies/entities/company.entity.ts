@@ -24,10 +24,10 @@ export class Company {
   @Column({ unique: true })
   cnpj: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 200 })
   company_name: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 150 })
   commercial_name: string;
 
   @Column({ type: 'date' })
