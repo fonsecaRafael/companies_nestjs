@@ -6,7 +6,7 @@ export class Partner {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 120 })
   name: string;
 
   @Column({ unique: true })
