@@ -6,7 +6,7 @@ export class Contact {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 15 })
   phone: string;
 
   @UpdateDateColumn({
