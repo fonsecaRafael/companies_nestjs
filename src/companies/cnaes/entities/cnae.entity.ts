@@ -12,10 +12,10 @@ export class Cnae {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 10 })
   code: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 200 })
   description: string;
 
   @Column()
