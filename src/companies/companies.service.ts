@@ -21,17 +21,17 @@ export class CompaniesService {
     return this.companyRepository.find();
   }
 
-  async findOne(cnpj: string): Promise<Company> {
+  async findOne(id: number): Promise<Company> {
     const company = await this.companyRepository.findOne({
-      where: { cnpj },
+      where: { id },
     });
     if (!company) throw new NotFoundException('Empresa não encontrada');
     return company;
   }
 
-  async update(cnpj: string, updateCompanyDto: UpdateCompanyDto): Promise<Company> {
+  async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<Company> {
     const company = await this.companyRepository.findOne({
-      where: { cnpj },
+      where: { id },
     });
     if (!company) {
       throw new NotFoundException('Empresa não encontrada');
@@ -40,8 +40,8 @@ export class CompaniesService {
     return this.companyRepository.save(company);
   }
 
-  async softDelete(cnpj: string): Promise<void> {
-    const result = await this.companyRepository.softDelete({ cnpj });
+  async softDelete(id: number): Promise<void> {
+    const result = await this.companyRepository.softDelete({ id });
     if (result.affected === 0) {
       throw new NotFoundException('Empresa não encontrada');
     }

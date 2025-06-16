@@ -11,7 +11,7 @@ describe('CompaniesService', () => {
   let service: CompaniesService;
   let companyRepository: Repository<Company>;
 
-  let dto: CreateCompanyDto = {
+  const dto: CreateCompanyDto = {
     company_name: 'Empresa Teste',
     cnpj: '12.345.678/0001-99',
     commercial_name: 'Nome Fantasia',
@@ -24,7 +24,7 @@ describe('CompaniesService', () => {
     tributation: Tributation.SIMPLES,
   };
 
-  let mockCompany = {
+  const mockCompany = {
     id: 1,
     ...dto,
     addresses: [],
@@ -87,15 +87,14 @@ describe('CompaniesService', () => {
   });
 
   describe('findOne()', () => {
-    it('should return a company by CNPJ', async () => {
-      const cnpj = '12.345.678/0001-99';
-      mockCompany.cnpj = cnpj;
+    it('should return a company by id', async () => {
+      const id = 1;
 
       jest.spyOn(companyRepository, 'findOne').mockResolvedValue(mockCompany);
 
-      const result = await service.findOne(cnpj);
+      const result = await service.findOne(id);
       expect(companyRepository.findOne).toHaveBeenCalledWith({
-        where: { cnpj },
+        where: { id },
       });
       expect(result).toEqual(mockCompany);
     });
@@ -103,23 +102,23 @@ describe('CompaniesService', () => {
     it('should throw NotFoundException if company does not exist', async () => {
       jest.spyOn(companyRepository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.findOne('00.000.000/0001-00')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne(2)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('softDelete()', () => {
     it('should perform soft delete', async () => {
-      const cnpj = '12.345.678/0001-99';
+      const id = 1;
       jest.spyOn(companyRepository, 'softDelete').mockResolvedValue({ affected: 1 } as any);
 
-      await service.softDelete(cnpj);
-      expect(companyRepository.softDelete).toHaveBeenCalledWith({ cnpj });
+      await service.softDelete(id);
+      expect(companyRepository.softDelete).toHaveBeenCalledWith({ id });
     });
 
     it('should throw NotFoundException if company does not exist', async () => {
       jest.spyOn(companyRepository, 'softDelete').mockResolvedValue({ affected: 0 } as any);
 
-      await expect(service.softDelete('00.000.000/0001-00')).rejects.toThrow(NotFoundException);
+      await expect(service.softDelete(1)).rejects.toThrow(NotFoundException);
     });
   });
 });

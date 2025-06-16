@@ -19,17 +19,17 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.companiesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
+  update(@Param('id') id: number, @Body() updateCompanyDto: UpdateCompanyDto) {
     return this.companiesService.update(id, updateCompanyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.companiesService.softDelete(id);
   }
 }
