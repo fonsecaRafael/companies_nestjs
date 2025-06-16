@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CompaniesService } from './companies.service';
 import { Company } from './entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { ConflictException, NotFoundException } from '@nestjs/common/exceptions';
 import { CompanySize, CompanyStatus, LegalNature, Tributation } from '../shared/enums';
 
 describe('CompaniesService', () => {
@@ -120,5 +120,25 @@ describe('CompaniesService', () => {
 
       await expect(service.softDelete(1)).rejects.toThrow(NotFoundException);
     });
+  });
+
+  it('should allow duplicate CNPJ if previous records are deleted', async () => {
+    let newCompany = { ...mockCompany };
+    newCompany.id = 2;
+
+    // Mock do repositório
+    jest.spyOn(companyRepository, 'findOne').mockResolvedValueOnce(null);
+    jest.spyOn(companyRepository, 'create').mockReturnValue(newCompany);
+    jest.spyOn(companyRepository, 'save').mockResolvedValue(newCompany);
+
+    await expect(service.create(dto)).resolves.toEqual(newCompany);
+  });
+
+  it('should reject duplicate CNPJ for active records', async () => {
+    jest.spyOn(companyRepository, 'findOne').mockResolvedValueOnce(mockCompany);
+
+    await expect(service.create(dto)).rejects.toThrow(
+      new ConflictException('Já existe uma empresa ativa com este CNPJ')
+    );
   });
 });
