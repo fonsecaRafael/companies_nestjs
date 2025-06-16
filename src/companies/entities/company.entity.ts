@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   OneToMany,
   ManyToMany,
+  Index,
 } from 'typeorm';
 import { Address } from '../../addresses/entities/address.entity';
 import { Contact } from '../../contacts/entities/contact.entity';
@@ -17,11 +18,15 @@ import { Product } from '../products/entities/product.entity';
 import { Cnae } from '../cnaes/entities/cnae.entity';
 
 @Entity()
+@Index(['cnpj'], {
+  unique: true,
+  where: '"deletedAt" IS NULL',
+})
 export class Company {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   cnpj: string;
 
   @Column({ type: 'varchar', length: 200 })

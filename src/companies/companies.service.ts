@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
@@ -12,9 +12,19 @@ export class CompaniesService {
     private companyRepository: Repository<Company>,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    const company = this.companyRepository.create(createCompanyDto);
-    return this.companyRepository.save(company);
+  async create(createCompanyDto: CreateCompanyDto) {
+    const existingActiveCompany = await this.companyRepository.findOne({
+      where: {
+        cnpj: createCompanyDto.cnpj,
+      },
+    });
+
+    if (existingActiveCompany) {
+      throw new ConflictException('Já existe uma empresa ativa com este CNPJ');
+    }
+
+    const newCompany = this.companyRepository.create(createCompanyDto);
+    return this.companyRepository.save(newCompany);
   }
 
   async findAll(): Promise<Company[]> {
