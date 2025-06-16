@@ -86,9 +86,9 @@ describe('CompaniesController', () => {
     });
 
     it('should return 404 when id does not exist', async () => {
-      jest.spyOn(service, 'findOne').mockRejectedValueOnce(new NotFoundException('Company not found'));
-
-      await expect(controller.findOne(8)).rejects.toThrow(NotFoundException);
+      const companyNotFoundMsg = 'Empresa não encontrado.';
+      (service.findOne as jest.Mock).mockRejectedValueOnce(new NotFoundException(companyNotFoundMsg));
+      await expect(controller.findOne(999)).rejects.toThrow(NotFoundException);
     });
   });
 
