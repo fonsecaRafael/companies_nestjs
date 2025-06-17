@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cnae } from './entities/cnae.entity';
 import { Repository } from 'typeorm';
@@ -21,8 +21,12 @@ export class CnaesService {
     return this.cnaeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cnae`;
+  async findOne(id: number): Promise<Cnae> {
+    const cnae = await this.cnaeRepository.findOne({
+      where: { id },
+    });
+    if (!cnae) throw new NotFoundException('CNAE não encontrado');
+    return cnae;
   }
 
   update(id: number, updateCnaeDto: UpdateCnaeDto) {
