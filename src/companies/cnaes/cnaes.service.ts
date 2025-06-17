@@ -12,13 +12,13 @@ export class CnaesService {
     private cnaeRepository: Repository<Cnae>,
   ) {}
 
-  create(createCnaeDto: CreateCnaeDto) {
+  async create(createCnaeDto: CreateCnaeDto) {
     const newCnae = this.cnaeRepository.create(createCnaeDto);
     return this.cnaeRepository.save(newCnae);
   }
 
-  findAll() {
-    return `This action returns all cnaes`;
+  async findAll(): Promise<Cnae[]> {
+    return this.cnaeRepository.find();
   }
 
   findOne(id: number) {
