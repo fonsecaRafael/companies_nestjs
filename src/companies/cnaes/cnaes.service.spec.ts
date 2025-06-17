@@ -3,12 +3,8 @@ import { CnaesService } from './cnaes.service';
 import { Cnae } from './entities/cnae.entity';
 import { CreateCnaeDto } from './dto/create-cnae.dto';
 import { Repository } from 'typeorm';
-
-// inicio
-
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-// fim
 describe('CnaesService', () => {
   let service: CnaesService;
   let repository: Repository<Cnae>;
