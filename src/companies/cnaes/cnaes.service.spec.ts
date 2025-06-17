@@ -28,13 +28,14 @@ describe('CnaesService', () => {
         {
           provide: getRepositoryToken(Cnae),
           useValue: {
+            create: jest.fn().mockImplementation(dto => dto),
             save: jest.fn().mockResolvedValue(mockCnae),
             find: jest.fn().mockResolvedValue([mockCnae]),
             findOne: jest
               .fn()
               .mockImplementation((options: any) =>
                 Promise.resolve(options.where.id === mockCnae.id ? mockCnae : null),
-            ),
+              ),
             softDelete: jest.fn().mockResolvedValue({ affected: 1 }),
           },
         },

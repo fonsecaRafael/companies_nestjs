@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Cnae } from './entities/cnae.entity';
+import { Repository } from 'typeorm';
 import { CreateCnaeDto } from './dto/create-cnae.dto';
 import { UpdateCnaeDto } from './dto/update-cnae.dto';
 
 @Injectable()
 export class CnaesService {
+  constructor(
+    @InjectRepository(Cnae)
+    private cnaeRepository: Repository<Cnae>,
+  ) {}
+
   create(createCnaeDto: CreateCnaeDto) {
-    return 'This action adds a new cnae';
+    const newCnae = this.cnaeRepository.create(createCnaeDto);
+    return this.cnaeRepository.save(newCnae);
   }
 
   findAll() {
