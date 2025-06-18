@@ -8,7 +8,7 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('CnaesService', () => {
   let service: CnaesService;
-  let repository: Repository<Cnae>;
+  let cnaeRepository: Repository<Cnae>;
 
   const dto: CreateCnaeDto = {
     code: '2599-3/02',
@@ -37,14 +37,14 @@ describe('CnaesService', () => {
               .mockImplementation((options: any) =>
                 Promise.resolve(options.where.id === mockCnae.id ? mockCnae : null),
               ),
-            softDelete: jest.fn().mockResolvedValue({ affected: 1 }),
+            softDelete: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<CnaesService>(CnaesService);
-    repository = module.get<Repository<Cnae>>(getRepositoryToken(Cnae));
+    cnaeRepository = module.get<Repository<Cnae>>(getRepositoryToken(Cnae));
   });
 
   it('should be defined', () => {
@@ -55,7 +55,7 @@ describe('CnaesService', () => {
     it('should create a CNAE', async () => {
       const result = await service.create(dto);
       expect(result).toEqual(mockCnae);
-      expect(repository.save).toHaveBeenCalledWith(dto);
+      expect(cnaeRepository.save).toHaveBeenCalledWith(dto);
     });
   });
 
@@ -63,7 +63,7 @@ describe('CnaesService', () => {
     it('should return an array of CNAEs', async () => {
       const result = await service.findAll();
       expect(result).toEqual([mockCnae]);
-      expect(repository.find).toHaveBeenCalled();
+      expect(cnaeRepository.find).toHaveBeenCalled();
     });
   });
 
@@ -71,29 +71,30 @@ describe('CnaesService', () => {
     it('should return a CNAE when ID exists', async () => {
       const result = await service.findOne(mockCnae.id);
       expect(result).toEqual(mockCnae);
-      expect(repository.findOne).toHaveBeenCalledWith({
+      expect(cnaeRepository.findOne).toHaveBeenCalledWith({
         where: { id: mockCnae.id },
       });
     });
 
     it('should return null when id does not exist', async () => {
-      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(cnaeRepository, 'findOne').mockResolvedValueOnce(null);
       await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
     });
   });
 
-  // describe('softDelete()', () => {
-  //   it('should delete a CNAE', async () => {
-  //     const result = await service.softDelete(mockCnae.id);
-  //     expect(result).toBeUndefined();
-  //     expect(repository.softDelete).toHaveBeenCalledWith({
-  //       id: mockCnae.id,
-  //     });
-  //   });
+  describe('softDelete()', () => {
+    it('should perform a CNAE soft delete', async () => {
+      const id = 1;
+      jest.spyOn(cnaeRepository, 'softDelete').mockResolvedValue({ affected: 1 } as any);
 
-  //   it('should throw error when CNAE not found', async () => {
-  //     jest.spyOn(repository, 'softDelete').mockResolvedValueOnce({ affected: 0 });
-  //     await expect(service.softDelete(999)).rejects.toThrow('CNAE não encontrado.');
-  //   });
-  // });
+      await service.softDelete(id);
+      expect(cnaeRepository.softDelete).toHaveBeenCalledWith({ id });
+    });
+
+    it('should throw NotFoundException if CNAE does not exist', async () => {
+      jest.spyOn(cnaeRepository, 'softDelete').mockResolvedValue({ affected: 0 } as any);
+
+      await expect(service.softDelete(1)).rejects.toThrow(NotFoundException);
+    });
+  });
 });
