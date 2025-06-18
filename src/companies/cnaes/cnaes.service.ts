@@ -33,7 +33,10 @@ export class CnaesService {
     return `This action updates a #${id} cnae`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cnae`;
+  async softDelete(id: number): Promise<void> {
+    const result = await this.cnaeRepository.softDelete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException('Cnae não encontrado.');
+    }
   }
 }
