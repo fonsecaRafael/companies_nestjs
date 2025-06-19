@@ -1,5 +1,5 @@
 import { Company } from '../../companies/entities/company.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Contact {
@@ -15,6 +15,9 @@ export class Contact {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   // Relationship
   @ManyToOne(() => Company, (company) => company.contacts)

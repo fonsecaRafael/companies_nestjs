@@ -1,5 +1,5 @@
 import { Company } from '../../../companies/entities/company.entity';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
 
 @Entity()
 export class Cnae {
@@ -20,6 +20,9 @@ export class Cnae {
 
   @Column()
   main: boolean;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   // Relationship
   @ManyToOne(() => Company, (company) => company.cnaes)

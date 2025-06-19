@@ -1,5 +1,5 @@
 import { Company } from '../../companies/entities/company.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Partner {
@@ -11,6 +11,9 @@ export class Partner {
 
   @Column({ unique: true })
   cpf: string;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   // Relationship
   @ManyToMany(() => Company, (company) => company.partners)

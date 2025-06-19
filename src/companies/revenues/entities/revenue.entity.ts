@@ -1,5 +1,5 @@
 import { Company } from '../../../companies/entities/company.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Revenue {
@@ -14,6 +14,9 @@ export class Revenue {
 
   @Column('decimal', { precision: 15, scale: 2 })
   value: number;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   // Relationship
   @ManyToOne(() => Company, (company) => company.revenues)
