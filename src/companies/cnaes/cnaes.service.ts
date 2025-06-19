@@ -29,8 +29,15 @@ export class CnaesService {
     return cnae;
   }
 
-  update(id: number, updateCnaeDto: UpdateCnaeDto) {
-    return `This action updates a #${id} cnae`;
+  async update(id: number, updateCnaeDto: UpdateCnaeDto): Promise<Cnae> {
+    const cnae = await this.cnaeRepository.findOne({
+      where: { id },
+    });
+    if (!cnae) {
+      throw new NotFoundException('CNAE não encontrado');
+    }
+    this.cnaeRepository.merge(cnae, updateCnaeDto);
+    return this.cnaeRepository.save(cnae);
   }
 
   async softDelete(id: number): Promise<void> {
