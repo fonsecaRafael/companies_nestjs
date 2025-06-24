@@ -32,19 +32,31 @@ export class AddressesService {
     return this.addressRepository.save(address);
   }
 
-  findAll() {
-    return `This action returns all addresses`;
+  async findAll(): Promise<Address[]> {
+    return this.addressRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
+  async findOne(id: number): Promise<Address> {
+    const address = await this.addressRepository.findOne({ where: { id } });
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado.');
+    }
+    return address;
   }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} #${updateAddressDto.city} address`;
+  async update(id: number, updateAddressDto: UpdateAddressDto): Promise<Address> {
+    const address = await this.addressRepository.findOne({ where: { id } });
+    if (!address) {
+      throw new NotFoundException('Endereço não encontrado');
+    }
+    this.addressRepository.merge(address, updateAddressDto);
+    return this.addressRepository.save(address);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+  async softDelete(id: number): Promise<void> {
+    const result = await this.addressRepository.softDelete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException('Endereço não encontrado');
+    }
   }
 }
